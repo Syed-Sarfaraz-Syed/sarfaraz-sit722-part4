@@ -1,1 +1,36 @@
-# Your Solution
+version: '3.8'
+ 
+services:
+  postgresql:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: book_inventory_3ibf_user
+      POSTGRES_PASSWORD: Zk8jOO5cGkOpUuLHOD2ki0GL96LvIuCk
+      POSTGRES_DB: book_inventory_3ibf
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+ 
+  book_catalog:
+    build: ./book_catalog
+    container_name: book_catalog
+    depends_on:
+      - postgresql
+    environment:
+      DATABASE_URL: "postgresql://book_inventory_3ibf_user:Zk8jOO5cGkOpUuLHOD2ki0GL96LvIuCk@dpg-crnctn56l47c73adph5g-a.oregon-postgres.render.com/book_inventory_3ibf"
+    ports:
+      - "5000:5000"
+ 
+  inventory_management:
+    build: ./inventory_management
+    container_name: inventory_management
+    depends_on:
+      - postgresql
+    environment:
+      DATABASE_URL: "postgresql://book_inventory_3ibf_user:Zk8jOO5cGkOpUuLHOD2ki0GL96LvIuCk@dpg-crnctn56l47c73adph5g-a.oregon-postgres.render.com/book_inventory_3ibf"
+    ports:
+      - "5001:5001"
+ 
+volumes:
+  postgres_data:
